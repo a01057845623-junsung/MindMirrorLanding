@@ -1,0 +1,268 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+  }
+  body {
+    @apply bg-ivory font-sans text-ink;
+    word-break: keep-all;
+  }
+  ::selection {
+    @apply bg-terra/25 text-ink;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* === REA AI로 추출한 Billdr.ai 실제 애니메이션 키프레임 (Block 8, 12, 16, 17, 18, 19) === */
+@keyframes bdCardDrop {
+  0% {
+    opacity: 0;
+    transform: translateY(-22px) scale(0.94);
+  }
+  55% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes bdCardRise {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.972);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes bdTilePop {
+  0% {
+    opacity: 0;
+    transform: translateY(12px) scale(0.86);
+  }
+  70% {
+    opacity: 1;
+    transform: translateY(-2px) scale(1.03);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes bdNotifSlide {
+  from {
+    opacity: 0;
+    transform: translateX(24px) scale(0.972);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes aiwfMsgIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes bdPenDraw {
+  from {
+    stroke-dashoffset: var(--pen-len, 240);
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes bdStrikeGrow {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes bdFloatParticle {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(0.9);
+    opacity: 0.25;
+  }
+  50% {
+    transform: translate3d(6px, -16px, 0) scale(1.25);
+    opacity: 0.85;
+  }
+}
+
+@keyframes bdScanLine {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(220%);
+  }
+}
+
+@layer components {
+  /* Billdr.ai .heading_eyebrow 패턴: 사각 도트 + 모노 라벨 */
+  .eyebrow {
+    @apply inline-flex items-center gap-2 font-mono text-[12px] uppercase tracking-[0.14em] text-muted;
+  }
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-1.5 rounded-full bg-terra px-5 py-2.5 font-semibold text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-terra-dark focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-terra;
+  }
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-1.5 rounded-full border border-line-strong px-5 py-2.5 font-medium text-ink transition-all duration-200 hover:-translate-y-0.5 hover:bg-sand;
+  }
+  .chip-mono {
+    @apply inline-flex items-center rounded-md border border-line bg-ivory px-2 py-0.5 font-mono text-[11px] uppercase tracking-wider text-muted;
+  }
+  /* Billdr.ai 도면형 가이드 그리드 */
+  .bg-blueprint {
+    background-image:
+      linear-gradient(to right, rgba(31, 30, 29, 0.045) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(31, 30, 29, 0.045) 1px, transparent 1px);
+    background-size: 32px 32px;
+  }
+  .section-anchor {
+    scroll-margin-top: 3.5rem;
+  }
+
+  /* Billdr 모션 유틸리티 클래스 */
+  .bd-card-drop {
+    animation: bdCardDrop 0.55s cubic-bezier(0.16, 0.84, 0.44, 1) both;
+  }
+  .bd-card-rise {
+    animation: bdCardRise 0.5s cubic-bezier(0.16, 0.84, 0.44, 1) both;
+  }
+  .bd-tile-pop {
+    animation: bdTilePop 0.52s cubic-bezier(0.34, 1.4, 0.64, 1) both;
+  }
+  .bd-notif-slide {
+    animation: bdNotifSlide 0.5s cubic-bezier(0.16, 0.84, 0.44, 1) both;
+  }
+  .bd-msg-in {
+    animation: aiwfMsgIn 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .bd-pen-draw {
+    stroke-dasharray: var(--pen-len, 240);
+    animation: bdPenDraw 0.9s cubic-bezier(0.16, 0.84, 0.44, 1) both;
+  }
+  .bd-strike {
+    transform-origin: left center;
+    animation: bdStrikeGrow 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .bd-particle {
+    animation: bdFloatParticle 4.2s ease-in-out infinite;
+  }
+
+  /* 슬라이드 진입 시(data-inview="true") 내부 요소 순차 조립 (Billdr Staggered Reveal) */
+  [data-slide] .bd-reveal {
+    opacity: 0;
+    transform: translateY(18px) scale(0.975);
+    transition:
+      opacity 0.65s cubic-bezier(0.16, 0.84, 0.44, 1),
+      transform 0.65s cubic-bezier(0.16, 0.84, 0.44, 1);
+  }
+  [data-slide][data-inview='true'] .bd-reveal {
+    opacity: 1;
+    transform: none;
+  }
+  [data-slide][data-inview='true'] .bd-delay-1 {
+    transition-delay: 80ms;
+  }
+  [data-slide][data-inview='true'] .bd-delay-2 {
+    transition-delay: 160ms;
+  }
+  [data-slide][data-inview='true'] .bd-delay-3 {
+    transition-delay: 240ms;
+  }
+  [data-slide][data-inview='true'] .bd-delay-4 {
+    transition-delay: 320ms;
+  }
+
+  /* === 하이브리드 발표 모드 (Horizontal Keynote Track + 3D Floating Card Depth) === */
+  html[data-deck-mode='horizontal'],
+  html[data-deck-mode='horizontal'] body {
+    overflow: hidden !important;
+    height: 100vh;
+    width: 100vw;
+    background-color: #161514;
+  }
+
+  html[data-deck-mode='horizontal'] main {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    width: calc(var(--slide-count, 8) * 100vw);
+    height: calc(100vh - var(--nav-h, 56px));
+    will-change: transform;
+    transition: transform 0.68s cubic-bezier(0.16, 0.84, 0.44, 1);
+    transform: translate3d(calc(var(--slide-idx, 0) * -100vw), 0, 0);
+  }
+
+  /* 중첩 섹션(#mechanism, #vision) 내부의 [data-slide]가 main의 직계 가로 플렉스 아이템으로 동작하도록 처리 */
+  html[data-deck-mode='horizontal'] main > section:not([data-slide]) {
+    display: contents !important;
+  }
+
+  html[data-deck-mode='horizontal'] [data-slide] {
+    width: 100vw !important;
+    min-width: 100vw !important;
+    max-width: 100vw !important;
+    height: calc(100vh - var(--nav-h, 56px)) !important;
+    min-height: calc(100vh - var(--nav-h, 56px)) !important;
+    flex: 0 0 100vw !important;
+    overflow: hidden !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    position: relative;
+    background-color: #fbf9f5;
+    transform: scale(0.91) translate3d(0, 22px, 0);
+    opacity: 0.28;
+    filter: blur(1.5px);
+    border-radius: 24px;
+    box-shadow: 0 32px 80px -16px rgba(0, 0, 0, 0.55);
+    transition:
+      transform 0.68s cubic-bezier(0.16, 0.84, 0.44, 1),
+      opacity 0.55s cubic-bezier(0.16, 0.84, 0.44, 1),
+      filter 0.55s cubic-bezier(0.16, 0.84, 0.44, 1),
+      border-radius 0.55s cubic-bezier(0.16, 0.84, 0.44, 1),
+      background-color 1.2s ease;
+  }
+
+  /* 05. Visual Closing 어두운 방 배경 유지 */
+  html[data-deck-mode='horizontal'] [data-slide='05 · Visual Closing'].bg-ink {
+    background-color: #1f1e1d;
+  }
+
+  /* 현재 활성 슬라이드: 정면으로 떠오르며(Float & Rise) 화면에 착 안착 */
+  html[data-deck-mode='horizontal'] [data-slide][data-active-slide='true'] {
+    transform: scale(1) translate3d(0, 0, 0);
+    opacity: 1;
+    filter: blur(0px);
+    border-radius: 0px;
+  }
+}
